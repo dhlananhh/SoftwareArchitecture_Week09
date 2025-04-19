@@ -6,6 +6,8 @@ import iuh.fit.se.customerservice.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
@@ -24,5 +26,15 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer findById(long id) {
         return customerRepository.findById(id).orElseThrow(() -> new RuntimeException("Customer not found"));
+    }
+
+    @Override
+    public List<Customer> getAllCustomers() {
+        return customerRepository.findAll();
+    }
+
+    @Override
+    public void deleteCustomer(Long id) {
+        customerRepository.deleteById(id);
     }
 }
