@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    image: api-gateway:latest  # Ensure this image exists or replace with the correct name
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker

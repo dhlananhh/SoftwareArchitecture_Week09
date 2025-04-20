@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  product-service:
+    image: product-service
+    container_name: product-service
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://product-db:5432/product_db
+      - SPRING_DATASOURCE_USERNAME=product_user
+      - SPRING_DATASOURCE_PASSWORD=product_password
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - product-db
+      - rabbitmq
+
+  product-db:
+    image: postgres:14
+    container_name: product-db
+    ports:
+      - "5435:5432"
+    environment:
+      - POSTGRES_DB=product_db
+      - POSTGRES_USER=product_user
+      - POSTGRES_PASSWORD=product_password
+    volumes:
+      - product_db_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+volumes:
+  product_db_data:

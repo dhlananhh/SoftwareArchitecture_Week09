@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  customer-service:
+    image: customer-service:latest
+    container_name: customer-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - customer-db
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://customer-db:5432/customer_db
+      - SPRING_DATASOURCE_USERNAME=customer_user
+      - SPRING_DATASOURCE_PASSWORD=customer_password
+
+  customer-db:
+    image: postgres:14
+    container_name: customer-db
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=customer_db
+      - POSTGRES_USER=customer_user
+      - POSTGRES_PASSWORD=customer_password
+    volumes:
+      - customer_db_data:/var/lib/postgresql/data
+
+volumes:
+  customer_db_data:
