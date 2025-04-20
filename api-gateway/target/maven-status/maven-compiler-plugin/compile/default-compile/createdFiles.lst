@@ -1,0 +1,3 @@
+iuh\fit\se\apigateway\configs\SecurityConfig.class
+iuh\fit\se\apigateway\filters\JWTGlobalFilter.class
+iuh\fit\se\apigateway\ApiGatewayApplication.class
