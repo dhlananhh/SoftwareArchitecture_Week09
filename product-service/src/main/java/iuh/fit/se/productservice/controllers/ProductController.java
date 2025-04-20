@@ -1,54 +1,50 @@
 package iuh.fit.se.productservice.controllers;
 
 import iuh.fit.se.productservice.entities.Product;
-import java.util.List;
-import iuh.fit.se.productservice.services.ProductService;
+import iuh.fit.se.productservice.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/products")
 public class ProductController {
 
-  @Autowired private ProductService productService;
+    @Autowired
+    private ProductRepository productRepository;
 
-  @GetMapping
-  public ResponseEntity<List<Product>> getAllProducts() {
-    List<Product> products = productService.getAllProducts();
-    return new ResponseEntity<>(products, HttpStatus.OK);
-  }
-
-  @GetMapping("/{id}")
-  public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-    Product product = productService.getProductById(id);
-    if (product != null) {
-      return new ResponseEntity<>(product, HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @PostMapping
+    public Product createProduct(@RequestBody Product product) {
+        return productRepository.save(product);
     }
-  }
 
-  @PostMapping
-  public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-    Product createdProduct = productService.createProduct(product);
-    return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
-  }
-
-  @PutMapping("/{id}")
-  public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
-    Product updatedProduct = productService.updateProduct(id, product);
-    if (updatedProduct != null) {
-      return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProduct(@PathVariable Long id) {
+        return productRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
-  }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-    productService.deleteProduct(id);
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-  }
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
+        return productRepository.findById(id)
+                .map(product -> {
+                    product.setName(productDetails.getName());
+                    product.setPrice(productDetails.getPrice());
+                    product.setDescription(productDetails.getDescription());
+                    product.setStock(productDetails.getStock());
+                    return ResponseEntity.ok(productRepository.save(product));
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteProduct(@PathVariable Long id) {
+        return productRepository.findById(id)
+                .map(product -> {
+                    productRepository.delete(product);
+                    return ResponseEntity.ok().build();
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
