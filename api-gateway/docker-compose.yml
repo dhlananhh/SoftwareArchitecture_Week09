@@ -1,12 +1,18 @@
 version: '3.8'
-
 services:
   api-gateway:
-    image: api-gateway:latest  # Ensure this image exists or replace with the correct name
-    container_name: api-gateway
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     depends_on:
-      - eureka-server
+      - eureka-service
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-service:8761/eureka/
+    networks:
+      - sales-network
+
+networks:
+  sales-network:
+    driver: bridge
