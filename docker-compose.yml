@@ -1,54 +1,186 @@
 version: '3.8'
 
 services:
+  # Service Discovery
   eureka-server:
     build:
       context: ./eureka-server
     image: eureka-server
+    container_name: eureka-server
     ports:
       - "8761:8761"
+    networks:
+      - microservices-network
 
+  # API Gateway
   api-gateway:
     build:
       context: ./api-gateway
     image: api-gateway
+    container_name: api-gateway
     ports:
       - "8080:8080"
     depends_on:
       - eureka-server
+      - identity-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    networks:
+      - microservices-network
 
+  # Product Service
   product-service:
     build:
       context: ./product-service
     image: product-service
-    ports:
-      - "8082:8082"
-    depends_on:
-      - eureka-server
-      - rabbitmq
-
-  order-service:
-    build:
-      context: ./order-service
-    image: order-service
-    ports:
-      - "8083:8083"
-    depends_on:
-      - eureka-server
-      - rabbitmq
-      - product-service
-
-  customer-service:
-    build:
-      context: ./customer-service
-    image: customer-service
+    container_name: product-service
     ports:
       - "8084:8084"
     depends_on:
       - eureka-server
+      - rabbitmq
+      - product-db
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://product-db:5432/product_db
+      - SPRING_DATASOURCE_USERNAME=product_user
+      - SPRING_DATASOURCE_PASSWORD=product_password
+    networks:
+      - microservices-network
 
+  # Order Service
+  order-service:
+    build:
+      context: ./order-service
+    image: order-service
+    container_name: order-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - eureka-server
+      - rabbitmq
+      - order-db
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://order-db:5432/order_db
+      - SPRING_DATASOURCE_USERNAME=order_user
+      - SPRING_DATASOURCE_PASSWORD=order_password
+    networks:
+      - microservices-network
+
+  # Customer Service
+  customer-service:
+    build:
+      context: ./customer-service
+    image: customer-service
+    container_name: customer-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eureka-server
+      - customer-db
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://customer-db:5432/customer_db
+      - SPRING_DATASOURCE_USERNAME=customer_user
+      - SPRING_DATASOURCE_PASSWORD=customer_password
+    networks:
+      - microservices-network
+
+  # Identity Service
+  identity-service:
+    build:
+      context: ./identity-service
+    image: identity-service
+    container_name: identity-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - identity-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://identity-db:5432/identity_db
+      - SPRING_DATASOURCE_USERNAME=identity_user
+      - SPRING_DATASOURCE_PASSWORD=identity_password
+    networks:
+      - microservices-network
+
+  # Message Broker
   rabbitmq:
     image: rabbitmq:3-management
+    container_name: rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - microservices-network
+
+  # Database Services
+  product-db:
+    image: postgres:14
+    container_name: product-db
+    ports:
+      - "5435:5432"
+    environment:
+      - POSTGRES_DB=product_db
+      - POSTGRES_USER=product_user
+      - POSTGRES_PASSWORD=product_password
+    volumes:
+      - product_db_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+  order-db:
+    image: postgres:14
+    container_name: order-db
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_DB=order_db
+      - POSTGRES_USER=order_user
+      - POSTGRES_PASSWORD=order_password
+    volumes:
+      - order_db_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+  customer-db:
+    image: postgres:14
+    container_name: customer-db
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=customer_db
+      - POSTGRES_USER=customer_user
+      - POSTGRES_PASSWORD=customer_password
+    volumes:
+      - customer_db_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+  identity-db:
+    image: postgres:14
+    container_name: identity-db
+    ports:
+      - "5436:5432"
+    environment:
+      - POSTGRES_DB=identity_db
+      - POSTGRES_USER=identity_user
+      - POSTGRES_PASSWORD=identity_password
+    volumes:
+      - identity_db_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+# Define volumes for database data persistence
+volumes:
+  product_db_data:
+  order_db_data:
+  customer_db_data:
+  identity_db_data:
+
+# Define a network for the services
+networks:
+  microservices-network:
+    driver: bridge
