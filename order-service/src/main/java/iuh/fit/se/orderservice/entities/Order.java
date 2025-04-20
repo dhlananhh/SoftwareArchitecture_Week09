@@ -18,4 +18,6 @@ public class Order {
     private Long productId;
     private Integer quantity;
     private String status;
+    private String productName;
+    private Double productPrice;
 }
