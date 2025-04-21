@@ -1,0 +1,34 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: order-service
+  datasource:
+    url: jdbc:postgresql://order-db:5432/orderdb
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  actuator:
+    endpoints:
+      prometheus:
+        enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-service:8761/eureka/
