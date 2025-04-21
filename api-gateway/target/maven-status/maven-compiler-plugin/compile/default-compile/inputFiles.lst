@@ -1,3 +1,3 @@
-E:\LAP TRINH JAVA\SoftwareArchitecture\SoftwareArchitecture_Week09\api-gateway\src\main\java\iuh\fit\se\apigateway\ApiGatewayApplication.java
-E:\LAP TRINH JAVA\SoftwareArchitecture\SoftwareArchitecture_Week09\api-gateway\src\main\java\iuh\fit\se\apigateway\configs\SecurityConfig.java
-E:\LAP TRINH JAVA\SoftwareArchitecture\SoftwareArchitecture_Week09\api-gateway\src\main\java\iuh\fit\se\apigateway\filters\JWTGlobalFilter.java
+E:\LAP TRINH JAVA\SoftwareArchitecture\SoftwareArchitecture_Week09\api-gateway\src\main\java\com\salesmanagement\apigateway\utils\JwtUtil.java
+E:\LAP TRINH JAVA\SoftwareArchitecture\SoftwareArchitecture_Week09\api-gateway\src\main\java\com\salesmanagement\apigateway\ApiGatewayApplication.java
+E:\LAP TRINH JAVA\SoftwareArchitecture\SoftwareArchitecture_Week09\api-gateway\src\main\java\com\salesmanagement\apigateway\filters\JwtFilter.java
