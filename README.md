@@ -35,19 +35,9 @@ The system follows a microservices architecture with the following components:
 - **Prometheus/Grafana**: Monitors service metrics and visualizes performance.
 - **PostgreSQL**: Each service has its own database (Database per Service principle).
 
-### Diagram
-```
-Client
-   |
-   v
-[API Gateway] ----> [Eureka Server] (Service Discovery)
-   |                  [Product Service] ----> [PostgreSQL] ----> [Kafka (Stock Updates)]
-   |                  [Order Service]   ----> [PostgreSQL] ----> [Kafka (Order Events)]
-   |                  [Customer Service] ----> [PostgreSQL]
-   |                  [Auth Service]
-   |                  [Prometheus] <---- Metrics
-   |                  [Grafana] <---- Visualization
-```
+### Architecture Diagram
+
+![Microservices Diagram](proof_images/Microservices_Diagram.png)
 
 ## Services
 1. **Product Service** (`product-service`):
