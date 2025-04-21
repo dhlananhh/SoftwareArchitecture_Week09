@@ -1,7 +1,0 @@
-iuh\fit\se\customerservice\CustomerServiceApplication.class
-iuh\fit\se\customerservice\entities\Customer.class
-iuh\fit\se\customerservice\entities\Customer$CustomerBuilder.class
-iuh\fit\se\customerservice\controllers\CustomerController.class
-iuh\fit\se\customerservice\services\impl\CustomerServiceImpl.class
-iuh\fit\se\customerservice\repositories\CustomerRepository.class
-iuh\fit\se\customerservice\services\CustomerService.class
