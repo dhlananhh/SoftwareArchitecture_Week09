@@ -1,9 +1,0 @@
-iuh\fit\se\orderservice\config\AppConfig.class
-iuh\fit\se\orderservice\entities\Order.class
-iuh\fit\se\orderservice\services\OrderService.class
-iuh\fit\se\orderservice\services\impl\OrderServiceImpl.class
-iuh\fit\se\orderservice\OrderServiceApplication.class
-iuh\fit\se\orderservice\config\RabbitMQConfig.class
-iuh\fit\se\orderservice\entities\Order$OrderBuilder.class
-iuh\fit\se\orderservice\repositories\OrderRepository.class
-iuh\fit\se\orderservice\controllers\OrderController.class
